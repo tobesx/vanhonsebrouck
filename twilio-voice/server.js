@@ -214,7 +214,7 @@ wss.on("connection", (twilioWs) => {
           .filter(c => c.type === "audio" && c.transcript)
           .map(c => c.transcript.toLowerCase())
           .join(" ") ?? "";
-        const isFarewell = /\b(dag|doei|tot ziens|tot later|tot de volgende keer|goeiedag)\b/.test(transcript);
+        const isFarewell = /\b(doei|tot ziens|tot later|tot de volgende keer)\b/.test(transcript);
         if (isFarewell) {
           console.log("  ↔ Farewell detected — closing call in 3s");
           setTimeout(() => openaiWs.close(), 3000);
