@@ -1,0 +1,15 @@
+{
+  "name": "vanhonsebrouck-michelle",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Vanhonsebrouck AI Sales Assistant – Michelle (voice)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.0",
+    "express": "^4.18.0"
+  }
+}

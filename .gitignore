@@ -1,0 +1,10 @@
+node_modules/
+web/node_modules/
+twilio-voice/node_modules/
+.env
+web/.env
+twilio-voice/.env
+twilio-voice/audio/
+*.mp3
+twilio_2FA_recovery_code.txt
+twilio-voice/server.v1-turn-based.js
