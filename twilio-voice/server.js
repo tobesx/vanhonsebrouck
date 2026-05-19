@@ -163,9 +163,9 @@ wss.on("connection", (twilioWs) => {
       session: {
         turn_detection: {
           type: "server_vad",
-          threshold: 0.6,
+          threshold: 0.8,
           prefix_padding_ms: 300,
-          silence_duration_ms: 800,
+          silence_duration_ms: 1200,
         },
         input_audio_format: "g711_ulaw",
         output_audio_format: "g711_ulaw",
@@ -207,9 +207,20 @@ wss.on("connection", (twilioWs) => {
         responseActive = true;
         break;
 
-      case "response.done":
+      case "response.done": {
         responseActive = false;
+        const transcript = event.response?.output
+          ?.flatMap(o => o.content ?? [])
+          .filter(c => c.type === "audio" && c.transcript)
+          .map(c => c.transcript.toLowerCase())
+          .join(" ") ?? "";
+        const isFarewell = /\b(dag|doei|tot ziens|tot later|tot de volgende keer|goeiedag)\b/.test(transcript);
+        if (isFarewell) {
+          console.log("  ↔ Farewell detected — closing call in 3s");
+          setTimeout(() => openaiWs.close(), 3000);
+        }
         break;
+      }
 
       case "input_audio_buffer.speech_started":
         // User started speaking — clear buffered audio and cancel active response
