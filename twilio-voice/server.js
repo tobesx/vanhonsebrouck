@@ -201,7 +201,7 @@ wss.on("connection", (twilioWs) => {
     try { event = JSON.parse(raw); } catch { return; }
 
     switch (event.type) {
-      case "response.audio.delta":
+      case "response.output_audio.delta":
         if (streamSid && twilioWs.readyState === WebSocket.OPEN) {
           twilioWs.send(JSON.stringify({
             event: "media",
@@ -219,7 +219,7 @@ wss.on("connection", (twilioWs) => {
         responseActive = false;
         const transcript = event.response?.output
           ?.flatMap(o => o.content ?? [])
-          .filter(c => c.type === "audio" && c.transcript)
+          .filter(c => (c.type === "audio" || c.type === "output_audio") && c.transcript)
           .map(c => c.transcript.toLowerCase())
           .join(" ") ?? "";
         const isFarewell = /\b(doei|tot ziens|tot later|tot de volgende keer)\b/.test(transcript);
