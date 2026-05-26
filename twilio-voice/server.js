@@ -25,7 +25,7 @@ const {
   MCP_URL = "https://efficy-mcp.simon-damiaens.workers.dev/mcp",
   PORT = 3001,
   PUBLIC_URL,
-  OPENAI_REALTIME_MODEL = "gpt-realtime-1.5",
+  OPENAI_REALTIME_MODEL = "gpt-realtime",
 } = process.env;
 
 if (!OPENAI_API_KEY || OPENAI_API_KEY === "your_openai_api_key_here") {
@@ -149,7 +149,6 @@ wss.on("connection", (twilioWs) => {
     {
       headers: {
         "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "OpenAI-Beta": "realtime=v1",
       },
     }
   );
@@ -161,15 +160,24 @@ wss.on("connection", (twilioWs) => {
     openaiWs.send(JSON.stringify({
       type: "session.update",
       session: {
-        turn_detection: {
-          type: "server_vad",
-          threshold: 0.8,
-          prefix_padding_ms: 300,
-          silence_duration_ms: 1000,
+        type: "realtime",
+        model: OPENAI_REALTIME_MODEL,
+        output_modalities: ["audio"],
+        audio: {
+          input: {
+            format: { type: "audio/pcmu" },
+            turn_detection: {
+              type: "server_vad",
+              threshold: 0.8,
+              prefix_padding_ms: 300,
+              silence_duration_ms: 1000,
+            },
+          },
+          output: {
+            format: { type: "audio/pcmu" },
+            voice: "shimmer",
+          },
         },
-        input_audio_format: "g711_ulaw",
-        output_audio_format: "g711_ulaw",
-        voice: "shimmer",
         instructions: SYSTEM_PROMPT,
         tools: realtimeTools,
         tool_choice: "auto",
